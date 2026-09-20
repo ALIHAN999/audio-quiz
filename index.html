@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Викторина: Арабский алфавит на слух</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,46 +49,49 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: clamp(8px, 2vh, 16px);
       overflow-x: hidden;
+      overflow-y: auto;
       position: relative;
     }
 
     /* Фоновые акценты */
     .glow-blob {
       position: fixed;
-      width: 340px;
-      height: 340px;
+      width: clamp(240px, 45vw, 360px);
+      height: clamp(240px, 45vw, 360px);
       border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.35;
+      filter: blur(90px);
+      opacity: 0.32;
       pointer-events: none;
       z-index: 0;
     }
     .blob-1 {
       background: radial-gradient(circle, #38bdf8, transparent 70%);
-      top: 5%;
+      top: 2%;
       left: 50%;
       transform: translateX(-50%);
     }
     .blob-2 {
       background: radial-gradient(circle, #4f46e5, transparent 70%);
-      bottom: 5%;
-      right: 10%;
+      bottom: 2%;
+      right: 5%;
     }
 
-    /* Основной контейнер */
+    /* Адаптивный контейнер под высоту экрана */
     .app-container {
       width: 100%;
-      max-width: 420px;
-      height: 640px;
+      max-width: 440px;
+      height: 100%;
+      max-height: calc(100dvh - clamp(16px, 3vh, 32px));
+      min-height: min(560px, calc(100dvh - 16px));
       background: var(--card-bg);
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
       border: 1px solid var(--card-border);
       border-top: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 36px;
-      padding: 28px 24px;
+      border-radius: clamp(24px, 5vw, 36px);
+      padding: clamp(16px, 3vh, 28px) clamp(16px, 4vw, 24px);
       display: flex;
       flex-direction: column;
       box-shadow: 
@@ -96,19 +99,34 @@
         0 0 0 1px var(--card-highlight) inset;
       position: relative;
       z-index: 1;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+    }
+
+    .app-container::-webkit-scrollbar {
+      display: none;
     }
 
     .screen {
       display: flex;
       flex-direction: column;
       height: 100%;
+      flex: 1;
+      min-height: 0;
       justify-content: space-between;
-      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: fadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #quiz-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px) scale(0.99); }
+      from { opacity: 0; transform: translateY(5px) scale(0.99); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
@@ -116,8 +134,13 @@
       display: none !important;
     }
 
+    #quiz-block {
+      justify-content: flex-start;
+      gap: clamp(6px, 1.4vh, 12px);
+    }
+
     /* ========================================================
-       ЧЕТКИЙ И СТИЛЬНЫЙ СТАРТОВЫЙ ЭКРАН
+       СТАРТОВЫЙ ЭКРАН
     ======================================================== */
     .start-screen {
       display: flex;
@@ -126,18 +149,18 @@
       justify-content: center;
       text-align: center;
       height: 100%;
-      padding: 8px 6px;
+      padding: 4px 6px;
     }
 
     .start-badge-wrapper {
       position: relative;
-      margin-bottom: 24px;
+      margin-bottom: clamp(14px, 2.8vh, 24px);
     }
 
     .start-icon-box {
-      width: 92px;
-      height: 92px;
-      border-radius: 28px;
+      width: clamp(74px, 11vh, 92px);
+      height: clamp(74px, 11vh, 92px);
+      border-radius: clamp(20px, 3.2vh, 28px);
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(37, 99, 235, 0.1));
       border: 1.5px solid rgba(56, 189, 248, 0.35);
       display: flex;
@@ -149,7 +172,7 @@
 
     .start-arabic-char {
       font-family: 'Amiri', serif;
-      font-size: 3.2rem;
+      font-size: clamp(2.4rem, 4.8vh, 3.2rem);
       font-weight: 700;
       color: var(--primary);
       line-height: 1;
@@ -159,57 +182,57 @@
 
     .start-sound-tag {
       position: absolute;
-      bottom: -6px;
-      right: -6px;
-      width: 32px;
-      height: 32px;
+      bottom: -4px;
+      right: -4px;
+      width: clamp(26px, 3.8vh, 32px);
+      height: clamp(26px, 3.8vh, 32px);
       background: #0f172a;
       border: 1.5px solid var(--primary);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #ffffff;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 
     .start-sound-tag svg {
-      width: 16px;
-      height: 16px;
+      width: clamp(13px, 1.8vh, 16px);
+      height: clamp(13px, 1.8vh, 16px);
       fill: var(--primary);
     }
 
     .start-title {
-      font-size: 1.65rem;
+      font-size: clamp(1.35rem, 2.6vh, 1.65rem);
       font-weight: 800;
       color: #ffffff;
       letter-spacing: -0.5px;
-      margin-bottom: 10px;
+      margin-bottom: clamp(6px, 1.2vh, 10px);
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
 
     .start-desc {
-      font-size: 0.95rem;
-      line-height: 1.55;
+      font-size: clamp(0.85rem, 1.5vh, 0.95rem);
+      line-height: 1.45;
       color: var(--text-sub);
       max-width: 300px;
-      margin-bottom: 24px;
+      margin-bottom: clamp(14px, 2.5vh, 22px);
       font-weight: 500;
     }
 
-    /* Информационные чипы */
     .start-chips {
       display: flex;
       gap: 8px;
-      margin-bottom: 28px;
+      margin-bottom: clamp(16px, 3vh, 26px);
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .start-chip {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 6px 12px;
+      padding: clamp(4px, 0.8vh, 6px) clamp(8px, 1.8vw, 12px);
       border-radius: 999px;
-      font-size: 0.78rem;
+      font-size: clamp(0.72rem, 1.2vh, 0.78rem);
       font-weight: 600;
       color: var(--text-muted);
       letter-spacing: 0.2px;
@@ -227,19 +250,19 @@
       background: var(--primary-gradient);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 18px;
-      padding: 16px 24px;
-      font-size: 1.05rem;
+      border-radius: clamp(14px, 2.5vh, 18px);
+      padding: clamp(12px, 2vh, 16px) clamp(18px, 3vw, 24px);
+      font-size: clamp(0.95rem, 1.6vh, 1.05rem);
       font-weight: 700;
       letter-spacing: 0.2px;
       cursor: pointer;
-      box-shadow: 0 12px 28px var(--primary-glow);
+      box-shadow: 0 10px 24px var(--primary-glow);
       transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .primary-btn:hover {
       transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 16px 36px rgba(56, 189, 248, 0.55);
+      box-shadow: 0 14px 32px rgba(56, 189, 248, 0.55);
     }
 
     .primary-btn:active {
@@ -252,7 +275,9 @@
     .header {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: clamp(8px, 1.6vh, 12px);
+      flex-shrink: 0;
+      width: 100%;
     }
 
     .top-bar {
@@ -262,13 +287,13 @@
     }
 
     .counter-pill {
-      font-size: 0.8rem;
+      font-size: clamp(0.72rem, 1.3vh, 0.8rem);
       font-weight: 700;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
       color: var(--text-muted);
       background: rgba(255, 255, 255, 0.04);
-      padding: 6px 14px;
+      padding: clamp(4px, 0.7vh, 6px) clamp(10px, 2vw, 14px);
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.06);
     }
@@ -279,9 +304,9 @@
       gap: 6px;
       background: rgba(56, 189, 248, 0.08);
       color: var(--primary);
-      font-size: 0.85rem;
+      font-size: clamp(0.75rem, 1.3vh, 0.85rem);
       font-weight: 700;
-      padding: 6px 14px;
+      padding: clamp(4px, 0.7vh, 6px) clamp(10px, 2vw, 14px);
       border-radius: 999px;
       border: 1px solid rgba(56, 189, 248, 0.25);
     }
@@ -296,7 +321,7 @@
 
     .progress-track {
       width: 100%;
-      height: 6px;
+      height: clamp(4px, 0.7vh, 6px);
       background: rgba(255, 255, 255, 0.06);
       border-radius: 999px;
       overflow: hidden;
@@ -311,12 +336,16 @@
       transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
+    /* Адаптивная аудио-секция */
     .audio-section {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin: auto 0;
+      margin: 0 auto;
+      flex-shrink: 0;
+      min-height: 0;
+      padding: clamp(4px, 1vh, 8px) 0 0 0;
     }
 
     .waves-container {
@@ -324,8 +353,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 140px;
-      height: 140px;
+      width: clamp(100px, 16vh, 136px);
+      height: clamp(100px, 16vh, 136px);
+      flex-shrink: 0;
     }
 
     .wave-ring {
@@ -352,8 +382,8 @@
     }
 
     .listen-btn {
-      width: 90px;
-      height: 90px;
+      width: clamp(68px, 11vh, 88px);
+      height: clamp(68px, 11vh, 88px);
       border-radius: 50%;
       background: var(--primary-gradient);
       border: 2px solid rgba(255, 255, 255, 0.25);
@@ -362,50 +392,62 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 12px 30px var(--primary-glow);
+      box-shadow: 0 10px 26px var(--primary-glow);
       transition: all 0.22s ease;
       z-index: 2;
     }
 
     .listen-btn:hover {
-      transform: scale(1.06);
-      box-shadow: 0 16px 36px rgba(56, 189, 248, 0.55);
+      transform: scale(1.05);
+      box-shadow: 0 14px 32px rgba(56, 189, 248, 0.55);
     }
 
     .listen-btn:active {
-      transform: scale(0.94);
+      transform: scale(0.93);
     }
 
     .listen-btn svg {
-      width: 36px;
-      height: 36px;
+      width: clamp(28px, 4.4vh, 35px);
+      height: clamp(28px, 4.4vh, 35px);
       fill: currentColor;
     }
 
+    /* Динамический отступ: сохраняет пространство и не упирается в кнопки */
     .listen-hint {
-      margin-top: 14px;
-      font-size: 0.82rem;
+      margin-top: clamp(8px, 1.6vh, 14px);
+      margin-bottom: clamp(8px, 1.8vh, 18px);
+      font-size: clamp(0.74rem, 1.3vh, 0.84rem);
       font-weight: 500;
       color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 0.2px;
+      line-height: 1.2;
     }
 
+    /* Центрированная сетка вариантов ответов */
     .options-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
+      gap: clamp(10px, 1.8vh, 16px);
       width: 100%;
+      max-width: 380px;
+      margin: auto auto;
+      align-content: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
     .option-btn {
       aspect-ratio: 1 / 1;
       width: 100%;
+      max-height: clamp(84px, 13vh, 132px);
       background: var(--btn-surface);
       border: 1px solid var(--btn-border);
       border-top: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 22px;
+      border-radius: clamp(16px, 2.6vh, 24px);
       color: var(--text-main);
       font-family: 'Amiri', serif;
-      font-size: 2.8rem;
+      font-size: clamp(2.3rem, 4.6vh, 3.2rem);
       font-weight: 700;
       cursor: pointer;
       display: flex;
@@ -413,16 +455,16 @@
       justify-content: center;
       direction: rtl;
       unicode-bidi: isolate;
-      padding-bottom: 6px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      padding-bottom: 4px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .option-btn:hover:not(:disabled) {
       background: var(--btn-surface-hover);
       border-color: rgba(255, 255, 255, 0.24);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
     }
 
     .option-btn:active:not(:disabled) {
@@ -437,7 +479,7 @@
       background: var(--success-surface) !important;
       border-color: var(--success-border) !important;
       color: var(--success-border) !important;
-      box-shadow: 0 0 25px var(--success-glow) !important;
+      box-shadow: 0 0 22px var(--success-glow) !important;
       transform: scale(1.02);
     }
 
@@ -445,7 +487,7 @@
       background: var(--error-surface) !important;
       border-color: var(--error-border) !important;
       color: var(--error-border) !important;
-      box-shadow: 0 0 25px var(--error-glow) !important;
+      box-shadow: 0 0 22px var(--error-glow) !important;
       animation: shake 0.35s ease-in-out;
     }
 
@@ -453,6 +495,82 @@
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-5px); }
       40%, 80% { transform: translateX(5px); }
+    }
+
+    /* ========================================================
+       СПЕЦИАЛЬНЫЕ МЕДИА-ПРАВИЛА ДЛЯ ОЧЕНЬ НЕВЫСОКИХ ЭКРАНОВ
+    ======================================================== */
+    @media (max-height: 660px) {
+      body {
+        padding: 6px;
+      }
+      .app-container {
+        border-radius: 20px;
+        padding: 14px 14px;
+        min-height: calc(100dvh - 12px);
+      }
+      .start-desc {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .audio-section {
+        padding: 2px 0;
+      }
+      .option-btn {
+        aspect-ratio: auto;
+        height: clamp(66px, 11.5vh, 82px);
+        font-size: clamp(2rem, 4vh, 2.5rem);
+      }
+    }
+
+    /* Ландшафтный режим на смартфонах */
+    @media (max-height: 480px) and (orientation: landscape) {
+      .app-container {
+        max-width: 640px;
+        padding: 10px 18px;
+      }
+      .quiz-block-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin: auto 0;
+      }
+      .audio-section {
+        flex: 1;
+        padding: 0;
+      }
+      .options-grid {
+        flex: 1.2;
+        gap: 8px;
+      }
+      .option-btn {
+        height: 48px;
+        font-size: 1.6rem;
+      }
+      .listen-hint {
+        margin-bottom: 6px;
+      }
+    }
+
+    /* Десктопная версия (просторная) */
+    @media (min-width: 640px) and (min-height: 720px) {
+      .app-container {
+        max-width: 460px;
+        height: 680px;
+        padding: 30px 28px;
+      }
+      .listen-hint {
+        margin-bottom: 20px;
+      }
+      .options-grid {
+        gap: 16px;
+      }
+      .option-btn {
+        height: 125px;
+        font-size: 3.2rem;
+      }
     }
 
     /* ========================================================
@@ -469,14 +587,13 @@
     }
 
     .result-score {
-      font-size: 3.8rem;
+      font-size: clamp(2.8rem, 6vh, 3.8rem);
       font-weight: 800;
       color: var(--primary);
-      margin: 8px 0 12px 0;
+      margin: clamp(4px, 1vh, 8px) 0 clamp(8px, 1.8vh, 12px) 0;
       letter-spacing: -1.5px;
       text-shadow: 0 0 24px var(--primary-glow);
     }
-    
   </style>
 </head>
 <body>
@@ -486,7 +603,7 @@
 
   <div class="app-container">
     
-    <!-- 1. Четкий стартовый экран -->
+    <!-- 1. Стартовый экран -->
     <div class="screen start-screen" id="start-block">
       <div class="start-badge-wrapper">
         <div class="start-icon-box">
@@ -544,11 +661,11 @@
 
     <!-- 3. Экран результатов -->
     <div class="screen result-screen hidden" id="result-block">
-      <h2 style="font-size: 1.6rem; font-weight: 800;">Раунд завершён</h2>
-      <p style="color: var(--text-muted); margin-top: 6px;">Количество точных ответов:</p>
+      <h2 style="font-size: clamp(1.3rem, 2.5vh, 1.6rem); font-weight: 800;">Раунд завершён</h2>
+      <p style="color: var(--text-muted); margin-top: 6px; font-size: clamp(0.85rem, 1.4vh, 0.95rem);">Количество точных ответов:</p>
       <div class="result-score" id="final-score">0 / 10</div>
-      <p id="result-message" style="color: var(--text-sub); font-size: 0.95rem; max-width: 280px;"></p>
-      <button class="primary-btn" id="restart-btn" style="margin-top: 24px;">Пройти ещё раз</button>
+      <p id="result-message" style="color: var(--text-sub); font-size: clamp(0.85rem, 1.4vh, 0.95rem); max-width: 280px;"></p>
+      <button class="primary-btn" id="restart-btn" style="margin-top: clamp(14px, 2.8vh, 24px);">Пройти ещё раз</button>
     </div>
 
   </div>
@@ -557,38 +674,38 @@
 
   <script>
     /* ========================================================================
-       БАЗА БУКВ И АУДИОФАЙЛОВ[span_1](start_span)[span_1](end_span)
+       БАЗА БУКВ И АУДИОФАЙЛОВ С ПОДДЕРЖКОЙ АЛЬТЕРНАТИВНЫХ ПУТЕЙ И ФОНЕТИКИ
     ======================================================================== */
     const AUDIO_DATABASE = [
-      { id: 'alif',  letter: 'ا', audio: 'audio/001-alif.mp3' },
-      { id: 'baa',   letter: 'ب', audio: 'audio/002-ba.mp3' },
-      { id: 'taa',   letter: 'ت', audio: 'audio/003-taa.mp3' },
-      { id: 'thaa',  letter: 'ث', audio: 'audio/004-tha.mp3' },
-      { id: 'jeem',  letter: 'ج', audio: 'audio/005-jeem.mp3' },
-      { id: 'haa',   letter: 'ح', audio: 'audio/006-haa.mp3' },
-      { id: 'khaa',  letter: 'خ', audio: 'audio/007-khaa.mp3' },
-      { id: 'daal',  letter: 'د', audio: 'audio/008-dal.mp3' },
-      { id: 'dhaal', letter: 'ذ', audio: 'audio/009-dhal.mp3' },
-      { id: 'raa',   letter: 'ر', audio: 'audio/010-raa.mp3' },
-      { id: 'zaay',  letter: 'ز', audio: 'audio/011-zaa.mp3' },
-      { id: 'seen',  letter: 'س', audio: 'audio/012-seen.mp3' },
-      { id: 'sheen', letter: 'ش', audio: 'audio/013-sheen.mp3' },
-      { id: 'saad',  letter: 'ص', audio: 'audio/014-saad.mp3' },
-      { id: 'daad',  letter: 'ض', audio: 'audio/015-dhaad.mp3' },
-      { id: 'taa2',  letter: 'ط', audio: 'audio/016-toa.mp3' },
-      { id: 'zaa',   letter: 'ظ', audio: 'audio/017-dhaa.mp3' },
-      { id: 'ayn',   letter: 'ع', audio: 'audio/018-ayn.mp3' },
-      { id: 'ghayn', letter: 'غ', audio: 'audio/019-ghayn.mp3' },
-      { id: 'faa',   letter: 'ف', audio: 'audio/020-faa.mp3' },
-      { id: 'qaaf',  letter: 'ق', audio: 'audio/021-qaaf.mp3' },
-      { id: 'kaaf',  letter: 'ك', audio: 'audio/022-kaaf.mp3' },
-      { id: 'laam',  letter: 'ل', audio: 'audio/023-laam.mp3' },
-      { id: 'meem',  letter: 'م', audio: 'audio/024-meem.mp3' },
-      { id: 'noon',  letter: 'ن', audio: 'audio/025-noon.mp3' },
-      { id: 'haa2',  letter: 'ه', audio: 'audio/027-ha.mp3' },
-      { id: 'waaw',  letter: 'و', audio: 'audio/026-waw.mp3' },
-      { id: 'yaa',   letter: 'ي', audio: 'audio/029-yaa.mp3' },
-      { id: 'hamza', letter: 'ء', audio: 'audio/028-hamza.mp3' }
+      { id: 'alif',  letter: 'ا', nameAr: 'أَلِف', audio: ['audio/001-alif.mp3'] },
+      { id: 'baa',   letter: 'ب', nameAr: 'بَاء', audio: ['audio/002-ba.mp3', 'audio/002-baa.mp3'] },
+      { id: 'taa',   letter: 'ت', nameAr: 'تَاء', audio: ['audio/003-taa.mp3', 'audio/003-ta.mp3'] },
+      { id: 'thaa',  letter: 'ث', nameAr: 'ثَاء', audio: ['audio/004-tha.mp3', 'audio/004-thaa.mp3'] },
+      { id: 'jeem',  letter: 'ج', nameAr: 'جِيم', audio: ['audio/005-jeem.mp3', 'audio/005-jim.mp3'] },
+      { id: 'haa',   letter: 'ح', nameAr: 'حَاء', audio: ['audio/006-haa.mp3', 'audio/006-ha.mp3'] },
+      { id: 'khaa',  letter: 'خ', nameAr: 'خَاء', audio: ['audio/007-khaa.mp3', 'audio/007-kha.mp3'] },
+      { id: 'daal',  letter: 'د', nameAr: 'دَال', audio: ['audio/008-dal.mp3', 'audio/008-daal.mp3'] },
+      { id: 'dhaal', letter: 'ذ', nameAr: 'ذَال', audio: ['audio/009-dhal.mp3', 'audio/009-dhaal.mp3'] },
+      { id: 'raa',   letter: 'ر', nameAr: 'رَاء', audio: ['audio/010-raa.mp3', 'audio/010-ra.mp3'] },
+      { id: 'zaay',  letter: 'ز', nameAr: 'زَاي', audio: ['audio/011-zaa.mp3', 'audio/011-zay.mp3', 'audio/011-za.mp3'] },
+      { id: 'seen',  letter: 'س', nameAr: 'سِين', audio: ['audio/012-seen.mp3', 'audio/012-sin.mp3'] },
+      { id: 'sheen', letter: 'ش', nameAr: 'شِين', audio: ['audio/013-sheen.mp3', 'audio/013-shin.mp3'] },
+      { id: 'saad',  letter: 'ص', nameAr: 'صَاد', audio: ['audio/014-saad.mp3', 'audio/014-sad.mp3'] },
+      { id: 'daad',  letter: 'ض', nameAr: 'ضَاد', audio: ['audio/015-dhaad.mp3', 'audio/015-daad.mp3', 'audio/015-dad.mp3'] },
+      { id: 'taa2',  letter: 'ط', nameAr: 'طَاء', audio: ['audio/016-toa.mp3', 'audio/016-taa.mp3', 'audio/016-ta.mp3'] },
+      { id: 'zaa',   letter: 'ظ', nameAr: 'ظَاء', audio: ['audio/017-dhaa.mp3', 'audio/017-zaa.mp3', 'audio/017-za.mp3'] },
+      { id: 'ayn',   letter: 'ع', nameAr: 'عَيْن', audio: ['audio/018-ayn.mp3', 'audio/018-ain.mp3'] },
+      { id: 'ghayn', letter: 'غ', nameAr: 'غَيْن', audio: ['audio/019-ghayn.mp3', 'audio/019-ghain.mp3'] },
+      { id: 'faa',   letter: 'ف', nameAr: 'فَاء', audio: ['audio/020-faa.mp3', 'audio/020-fa.mp3'] },
+      { id: 'qaaf',  letter: 'ق', nameAr: 'قَاف', audio: ['audio/021-qaaf.mp3', 'audio/021-qaf.mp3'] },
+      { id: 'kaaf',  letter: 'ك', nameAr: 'كَاف', audio: ['audio/022-kaaf.mp3', 'audio/022-kaf.mp3'] },
+      { id: 'laam',  letter: 'ل', nameAr: 'لَام', audio: ['audio/023-laam.mp3', 'audio/023-lam.mp3'] },
+      { id: 'meem',  letter: 'م', nameAr: 'مِيم', audio: ['audio/024-meem.mp3', 'audio/024-mim.mp3'] },
+      { id: 'noon',  letter: 'ن', nameAr: 'نُون', audio: ['audio/025-noon.mp3', 'audio/025-nun.mp3'] },
+      { id: 'haa2',  letter: 'ه', nameAr: 'هَاء', audio: ['audio/027-ha.mp3', 'audio/027-haa.mp3'] },
+      { id: 'waaw',  letter: 'و', nameAr: 'وَاو', audio: ['audio/026-waw.mp3', 'audio/026-waaw.mp3'] },
+      { id: 'yaa',   letter: 'ي', nameAr: 'يَاء', audio: ['audio/029-yaa.mp3', 'audio/029-ya.mp3'] },
+      { id: 'hamza', letter: 'ء', nameAr: 'هَمْزَة', audio: ['audio/028-hamza.mp3'] }
     ];
 
     const QUESTIONS_PER_ROUND = 10;
@@ -598,6 +715,7 @@
     let score = 0;
     let currentTarget = null;
     let isLocked = false;
+    let currentAudioIndex = 0;
 
     const audioPlayer = document.getElementById('audio-player');
     const listenBtn = document.getElementById('listen-btn');
@@ -616,6 +734,13 @@
     const finalScore = document.getElementById('final-score');
     const resultMessage = document.getElementById('result-message');
 
+    /* Предварительная загрузка голосов синтеза речи */
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+
     function shuffleArray(arr) {
       const copy = [...arr];
       for (let i = copy.length - 1; i > 0; i--) {
@@ -633,35 +758,82 @@
       }
     }
 
-    function playTargetSound() {
-      if (!currentTarget || !currentTarget.audio) return;
+    function playSpeechFallback() {
+      if (!('speechSynthesis' in window) || !currentTarget) {
+        setAudioPlayingState(false);
+        return;
+      }
 
+      window.speechSynthesis.cancel();
+      const textToSpeak = currentTarget.nameAr || currentTarget.letter;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.lang = 'ar-SA';
+      utterance.rate = 0.85;
+
+      const voices = window.speechSynthesis.getVoices();
+      const arVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
+      if (arVoice) {
+        utterance.voice = arVoice;
+      }
+
+      utterance.onstart = () => setAudioPlayingState(true);
+      utterance.onend = () => setAudioPlayingState(false);
+      utterance.onerror = () => setAudioPlayingState(false);
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function tryNextAudioSource() {
+      if (!currentTarget) {
+        setAudioPlayingState(false);
+        return;
+      }
+
+      const sources = Array.isArray(currentTarget.audio) 
+        ? currentTarget.audio 
+        : [currentTarget.audio];
+
+      if (currentAudioIndex < sources.length) {
+        const nextSrc = sources[currentAudioIndex];
+        currentAudioIndex++;
+        audioPlayer.src = nextSrc;
+        setAudioPlayingState(true);
+
+        const playPromise = audioPlayer.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            tryNextAudioSource();
+          });
+        }
+      } else {
+        /* Если все локальные файлы недоступны, переключаемся на синтез речи */
+        playSpeechFallback();
+      }
+    }
+
+    function playTargetSound() {
+      if (!currentTarget) return;
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
       audioPlayer.pause();
       audioPlayer.currentTime = 0;
-      audioPlayer.src = currentTarget.audio;
+      currentAudioIndex = 0;
 
-      setAudioPlayingState(true);
-
-      const playPromise = audioPlayer.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          setAudioPlayingState(false);
-          console.warn("Воспроизведение ожидает действия пользователя:", error);
-        });
-      }
+      tryNextAudioSource();
     }
 
     audioPlayer.onended = () => setAudioPlayingState(false);
     audioPlayer.onerror = () => {
-      setAudioPlayingState(false);
-      console.error("Ошибка загрузки звука:", audioPlayer.src);
+      tryNextAudioSource();
     };
 
     listenBtn.addEventListener('click', playTargetSound);
 
     function startQuiz() {
       if (AUDIO_DATABASE.length < 4) {
-        alert('В базе должно быть минимум 4 буквы для формирования вариантов ответа.');
+        console.warn('В базе должно быть минимум 4 буквы для формирования вариантов ответа.');
         return;
       }
 
