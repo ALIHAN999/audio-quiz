@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Викторина: Арабский алфавит на слух</title>
   
+  <!-- VK Bridge SDK -->
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -41,7 +44,7 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text-main);
       min-height: 100vh;
@@ -49,7 +52,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: clamp(8px, 2vh, 16px);
+      /* Отступы с учетом Safe Area внутри клиента VK */
+      padding-top: max(clamp(8px, 2vh, 16px), env(safe-area-inset-top));
+      padding-bottom: max(clamp(8px, 2vh, 16px), env(safe-area-inset-bottom));
+      padding-left: max(clamp(8px, 2vh, 16px), env(safe-area-inset-left));
+      padding-right: max(clamp(8px, 2vh, 16px), env(safe-area-inset-right));
       overflow-x: hidden;
       overflow-y: auto;
       position: relative;
@@ -121,8 +128,9 @@
     #quiz-block {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
+      gap: clamp(6px, 1.4vh, 12px);
     }
 
     @keyframes fadeIn {
@@ -132,11 +140,6 @@
 
     .hidden {
       display: none !important;
-    }
-
-    #quiz-block {
-      justify-content: flex-start;
-      gap: clamp(6px, 1.4vh, 12px);
     }
 
     /* ========================================================
@@ -342,11 +345,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin: 20 auto;
+      margin: 20px auto;
       flex-shrink: 0;
       min-height: 0;
       padding: clamp(4px, 1vh, 8px) 0 0 0;
-      margin-top: clamp(80px, 3vh, 32px);
+      margin-top: clamp(20px, 3.5vh, 36px);
       margin-bottom: auto;
     }
 
@@ -414,7 +417,6 @@
       fill: currentColor;
     }
 
-    /* Динамический отступ: сохраняет пространство и не упирается в кнопки */
     .listen-hint {
       margin-top: clamp(8px, 1.6vh, 14px);
       margin-bottom: clamp(8px, 1.8vh, 18px);
@@ -499,9 +501,7 @@
       40%, 80% { transform: translateX(5px); }
     }
 
-    /* ========================================================
-       СПЕЦИАЛЬНЫЕ МЕДИА-ПРАВИЛА ДЛЯ ОЧЕНЬ НЕВЫСОКИХ ЭКРАНОВ
-    ======================================================== */
+    /* Специальные медиа-правила для невысоких экранов */
     @media (max-height: 660px) {
       body {
         padding: 6px;
@@ -527,36 +527,7 @@
       }
     }
 
-    /* Ландшафтный режим на смартфонах */
-    @media (max-height: 480px) and (orientation: landscape) {
-      .app-container {
-        max-width: 640px;
-        padding: 10px 18px;
-      }
-      .quiz-block-content {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        margin: auto 0;
-      }
-      .audio-section {
-        flex: 1;
-        padding: 0;
-      }
-      .options-grid {
-        flex: 1.2;
-        gap: 8px;
-      }
-      .option-btn {
-        height: 48px;
-        font-size: 1.6rem;
-      }
-      .listen-hint {
-        margin-bottom: 6px;
-      }
-    }
-
-    /* Десктопная версия (просторная) */
+    /* Десктопная версия */
     @media (min-width: 640px) and (min-height: 720px) {
       .app-container {
         max-width: 460px;
@@ -676,7 +647,20 @@
 
   <script>
     /* ========================================================================
-       БАЗА БУКВ И АУДИОФАЙЛОВ С ПОДДЕРЖКОЙ АЛЬТЕРНАТИВНЫХ ПУТЕЙ И ФОНЕТИКИ
+       ИНИЦИАЛИЗАЦИЯ VK MINI APPS (БЕЗ ВИБРАЦИИ)
+    ======================================================================== */
+    if (window.vkBridge) {
+      window.vkBridge.send('VKWebAppInit')
+        .then(() => {
+          console.log('VK Mini App успешно инициализирован');
+        })
+        .catch((error) => {
+          console.warn('Ошибка инициализации VK Bridge:', error);
+        });
+    }
+
+    /* ========================================================================
+       БАЗА БУКВ И АУДИОФАЙЛОВ
     ======================================================================== */
     const AUDIO_DATABASE = [
       { id: 'alif',  letter: 'ا', nameAr: 'أَلِف', audio: ['audio/001-alif.mp3'] },
@@ -736,7 +720,6 @@
     const finalScore = document.getElementById('final-score');
     const resultMessage = document.getElementById('result-message');
 
-    /* Предварительная загрузка голосов синтеза речи */
     if ('speechSynthesis' in window) {
       window.speechSynthesis.onvoiceschanged = () => {
         window.speechSynthesis.getVoices();
@@ -808,7 +791,6 @@
           });
         }
       } else {
-        /* Если все локальные файлы недоступны, переключаемся на синтез речи */
         playSpeechFallback();
       }
     }
