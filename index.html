@@ -52,7 +52,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      /* Отступы с учетом Safe Area внутри клиента VK */
       padding-top: max(clamp(8px, 2vh, 16px), env(safe-area-inset-top));
       padding-bottom: max(clamp(8px, 2vh, 16px), env(safe-area-inset-bottom));
       padding-left: max(clamp(8px, 2vh, 16px), env(safe-area-inset-left));
@@ -62,7 +61,6 @@
       position: relative;
     }
 
-    /* Фоновые акценты */
     .glow-blob {
       position: fixed;
       width: clamp(240px, 45vw, 360px);
@@ -85,7 +83,6 @@
       right: 5%;
     }
 
-    /* Адаптивный контейнер под высоту экрана */
     .app-container {
       width: 100%;
       max-width: 440px;
@@ -142,9 +139,7 @@
       display: none !important;
     }
 
-    /* ========================================================
-       СТАРТОВЫЙ ЭКРАН
-    ======================================================== */
+    /* Стартовый экран */
     .start-screen {
       display: flex;
       flex-direction: column;
@@ -272,9 +267,7 @@
       transform: scale(0.97);
     }
 
-    /* ========================================================
-       ЭКРАН ВИКТОРИНЫ
-    ======================================================== */
+    /* Экран викторины */
     .header {
       display: flex;
       flex-direction: column;
@@ -339,7 +332,6 @@
       transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Адаптивная аудио-секция */
     .audio-section {
       display: flex;
       flex-direction: column;
@@ -428,7 +420,6 @@
       line-height: 1.2;
     }
 
-    /* Центрированная сетка вариантов ответов */
     .options-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -501,7 +492,6 @@
       40%, 80% { transform: translateX(5px); }
     }
 
-    /* Специальные медиа-правила для невысоких экранов */
     @media (max-height: 660px) {
       body {
         padding: 6px;
@@ -527,7 +517,6 @@
       }
     }
 
-    /* Десктопная версия */
     @media (min-width: 640px) and (min-height: 720px) {
       .app-container {
         max-width: 460px;
@@ -546,9 +535,7 @@
       }
     }
 
-    /* ========================================================
-       ЭКРАН РЕЗУЛЬТАТОВ
-    ======================================================== */
+    /* Экран результатов */
     .result-screen {
       display: flex;
       flex-direction: column;
@@ -647,9 +634,17 @@
 
   <script>
     /* ========================================================================
-       ИНИЦИАЛИЗАЦИЯ VK MINI APPS (БЕЗ ВИБРАЦИИ)
+       ИНИЦИАЛИЗАЦИЯ VK MINI APPS
     ======================================================================== */
     if (window.vkBridge) {
+      window.vkBridge.subscribe((event) => {
+        if (!event.detail) return;
+        const { type, data } = event.detail;
+        if (type === 'VKWebAppUpdateConfig') {
+          // Обработка темы или отступов при необходимости
+        }
+      });
+
       window.vkBridge.send('VKWebAppInit')
         .then(() => {
           console.log('VK Mini App успешно инициализирован');
@@ -743,6 +738,15 @@
       }
     }
 
+    function stopAllAudio() {
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      setAudioPlayingState(false);
+    }
+
     function playSpeechFallback() {
       if (!('speechSynthesis' in window) || !currentTarget) {
         setAudioPlayingState(false);
@@ -786,8 +790,13 @@
 
         const playPromise = audioPlayer.play();
         if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            tryNextAudioSource();
+          playPromise.catch((err) => {
+            // Если браузер заблокировал autoplay — не крутим волны попусту
+            if (err.name === 'NotAllowedError') {
+              setAudioPlayingState(false);
+            } else {
+              tryNextAudioSource();
+            }
           });
         }
       } else {
@@ -798,13 +807,8 @@
     function playTargetSound() {
       if (!currentTarget) return;
 
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-      audioPlayer.pause();
-      audioPlayer.currentTime = 0;
+      stopAllAudio();
       currentAudioIndex = 0;
-
       tryNextAudioSource();
     }
 
@@ -835,6 +839,7 @@
     }
 
     function displayQuestion() {
+      stopAllAudio();
       isLocked = false;
       currentTarget = quizPool[currentQuestionIndex];
 
@@ -851,6 +856,7 @@
         const btn = document.createElement('button');
         btn.className = 'option-btn';
         btn.textContent = choice.letter;
+        btn.dataset.id = choice.id;
         btn.setAttribute('aria-label', `Вариант: буква ${choice.letter}`);
         btn.onclick = () => onSelectChoice(choice, btn);
         optionsContainer.appendChild(btn);
@@ -862,6 +868,7 @@
     function onSelectChoice(selected, buttonElement) {
       if (isLocked) return;
       isLocked = true;
+      stopAllAudio();
 
       const buttons = optionsContainer.querySelectorAll('.option-btn');
       const isCorrect = selected.id === currentTarget.id;
@@ -873,7 +880,7 @@
       } else {
         buttonElement.classList.add('wrong');
         buttons.forEach(btn => {
-          if (btn.textContent === currentTarget.letter) {
+          if (btn.dataset.id === currentTarget.id) {
             btn.classList.add('correct');
           }
         });
@@ -892,6 +899,7 @@
     }
 
     function showResult() {
+      stopAllAudio();
       progressBar.style.width = '100%';
       quizBlock.classList.add('hidden');
       resultBlock.classList.remove('hidden');
